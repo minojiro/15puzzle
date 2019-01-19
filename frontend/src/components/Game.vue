@@ -20,6 +20,7 @@ export default {
   name: 'Game',
   data() {
     return {
+      inPlay: false,
       blocks: [
         [1, 2, 3, 4],
         [5, 6, 7, 8],
@@ -28,22 +29,32 @@ export default {
       ],
     };
   },
+  watch: {
+    isCompleted(newVal) {
+      if (newVal && this.inPlay) {
+        alert('completed!');
+        this.inPlay = false;
+      }
+    },
+  },
   computed: {
+    flattenBlocks() {
+      return this.blocks.reduce((acc, cur) => acc.concat(cur), []);
+    },
     isCompleted() {
-      const arr = this.blocks.reduce((acc, cur) => acc.concat(cur), []);
-      return !arr.filter((n, i) => n !== (i + 1) % 16).length;
+      return !this.flattenBlocks.filter((n, i) => n !== (i + 1) % 16).length;
     },
   },
   mounted() {
     this.shuffle();
+    this.inPlay = true;
   },
   methods: {
     blockClickHandler(block) {
       this.moveBlock(block);
-      this.checkComplete();
     },
-    arrayDeepCopy(a) {
-      return Array.isArray(a) ? a.map(this.arrayDeepCopy) : a;
+    arrayDeepCopy(array) {
+      return Array.isArray(array) ? array.map(this.arrayDeepCopy) : array;
     },
     shuffle() {
       for (let i = 0; i < 100; i ++) {
@@ -51,20 +62,20 @@ export default {
         this.moveBlock(targetBlock);
       };
     },
-    checkComplete() {
-      if (this.isCompleted) alert('completed!');
+    xor(a, b) {
+      return (!a && b) || (a && !b);
     },
     moveBlock(block) {
       const emptyPos = this.getBlockPos(0);
       const blockPos = this.getBlockPos(block);
       const diffX = emptyPos.x - blockPos.x;
       const diffY = emptyPos.y - blockPos.y;
-      const isMovable = (!diffX || !diffY) && !(!diffX && !diffY);
+      const isMovable = this.xor(diffX, diffY);
 
       if (!isMovable) return;
 
-      const incrementX = diffX > 0 ? 1 : (diffX < 0 ? -1 : 0);
-      const incrementY = diffY > 0 ? 1 : (diffY < 0 ? -1 : 0);
+      const incrementX = this.getIncrementNum(diffX);
+      const incrementY = this.getIncrementNum(diffY);
       const loopCount = Math.abs(diffX + diffY);
 
       let newBlocks = this.arrayDeepCopy(this.blocks);
@@ -77,6 +88,9 @@ export default {
       }
       newBlocks[blockPos.y][blockPos.x] = 0;
       this.blocks = newBlocks;
+    },
+    getIncrementNum(n) {
+      return n === 0 ? 0 : (n > 0 ? 1 : -1);
     },
     getBlockPos(searchBlock) {
       let r = null;
