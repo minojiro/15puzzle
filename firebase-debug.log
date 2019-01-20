@@ -1,0 +1,16 @@
+[debug] [2019-01-20T04:17:13.439Z] ----------------------------------------------------------------------
+[debug] [2019-01-20T04:17:13.441Z] Command:       /Users/minojiro/.ndenv/versions/v11.2.0/bin/node /usr/local/bin/firebase use --add
+[debug] [2019-01-20T04:17:13.441Z] CLI Version:   6.3.0
+[debug] [2019-01-20T04:17:13.441Z] Platform:      darwin
+[debug] [2019-01-20T04:17:13.441Z] Node Version:  v11.2.0
+[debug] [2019-01-20T04:17:13.442Z] Time:          Sun Jan 20 2019 13:17:13 GMT+0900 (GMT+09:00)
+[debug] [2019-01-20T04:17:13.442Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-01-20T04:17:13.449Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-01-20T04:17:13.450Z] > authorizing via signed-in user
+[debug] [2019-01-20T04:17:13.451Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-01-20T04:17:13.452Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-01-20T04:17:13.625Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-20T04:17:13.636Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects  
+ 
