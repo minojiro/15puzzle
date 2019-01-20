@@ -1,16 +1,15 @@
 <template>
   <div class="container">
     <div class="block-list">
-      <template v-for="block in allCompletedBlocks">
-        <div class="block"
-          @click="blockClickHandler(block)"
-          :key="block"
-          :style="getBlockStyle(block)">
-          <div class="block-inner" :class="{'is-empty': !block}">
-            <div class="block-text">{{block}}</div>
-          </div>
+      <div class="block"
+        v-for="block in completedFlattenBlocks"
+        @click="blockClickHandler(block)"
+        :key="block"
+        :style="getBlockStyle(block)">
+        <div class="block-inner" :class="{'is-empty': !block}">
+          <div class="block-text">{{block}}</div>
         </div>
-      </template>
+      </div>
     </div>
   </div>
 </template>
@@ -21,12 +20,7 @@ export default {
   data() {
     return {
       inPlay: false,
-      blocks: [
-        [1, 2, 3, 4],
-        [5, 6, 7, 8],
-        [9, 10, 11, 12],
-        [13, 14, 15, 0],
-      ],
+      blocks: [],
     };
   },
   watch: {
@@ -38,17 +32,26 @@ export default {
     },
   },
   computed: {
-    allCompletedBlocks() {
+    completedFlattenBlocks() {
       return Array.from({length: 16}).map((_, i) => (i + 1) % 16);
+    },
+    completedBlocks() {
+      return this.completedFlattenBlocks.reduce((acc, cur, i) => {
+        const bi = ~~(i / 4);
+        acc[bi] = acc[bi] || [];
+        acc[bi].push(cur);
+        return acc;
+      }, []);
     },
     flattenBlocks() {
       return this.blocks.reduce((acc, cur) => acc.concat(cur), []);
     },
     isCompleted() {
-      return !this.allCompletedBlocks.filter((n, i) => n !== this.flattenBlocks[i]).length;
+      return !this.completedFlattenBlocks.filter((n, i) => n !== this.flattenBlocks[i]).length;
     },
   },
   mounted() {
+    this.blocks = this.completedBlocks;
     this.shuffle();
     this.inPlay = true;
   },
@@ -106,7 +109,7 @@ export default {
     },
     getBlockStyle(block) {
       const pos = this.getBlockPos(block);
-      return {
+      return pos && {
         left: `${25 * pos.x}%`,
         top: `${25 * pos.y}%`,
       }
