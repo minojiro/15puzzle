@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="block-list">
-      <template v-for="row in blocks">
+      <template v-for="block in allCompletedBlocks">
         <div class="block"
           @click="blockClickHandler(block)"
-          v-for="block in row"
-          :key="block">
+          :key="block"
+          :style="getBlockStyle(block)">
           <div class="block-inner" :class="{'is-empty': !block}">
             <div class="block-text">{{block}}</div>
           </div>
@@ -38,11 +38,14 @@ export default {
     },
   },
   computed: {
+    allCompletedBlocks() {
+      return Array.from({length: 16}).map((_, i) => (i + 1) % 16);
+    },
     flattenBlocks() {
       return this.blocks.reduce((acc, cur) => acc.concat(cur), []);
     },
     isCompleted() {
-      return !this.flattenBlocks.filter((n, i) => n !== (i + 1) % 16).length;
+      return !this.allCompletedBlocks.filter((n, i) => n !== this.flattenBlocks[i]).length;
     },
   },
   mounted() {
@@ -99,6 +102,13 @@ export default {
       }));
       return r;
     },
+    getBlockStyle(block) {
+      const pos = this.getBlockPos(block);
+      return {
+        left: `${25 * pos.x}%`,
+        top: `${25 * pos.y}%`,
+      }
+    },
   },
 }
 </script>
@@ -108,26 +118,31 @@ export default {
   padding: 2px;
   box-sizing: border-box;
   background: #efefef;
-  display: flex;
-  flex-wrap: wrap;
+  display: block;
+  position: relative;
+}
+.block-list:before {
+  content: '';
+  display: block;
+  padding-top: 100%;
 }
 
 .block {
   width: 25%;
+  height: 25%;
+  position: absolute;
+  transition: all 0.1s ease;
+  box-sizing: border-box;
+  padding: 2px;
 }
 
 .block-inner {
   background: #fff;
   box-sizing: border-box;
-  border: 2px solid #efefef;
   position: relative;
   line-height: 1;
-}
-
-.block-inner:before {
-  content: '';
-  display: block;
-  padding-top: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .block-text {
@@ -142,8 +157,7 @@ export default {
 }
 
 .block-inner.is-empty {
-  background: #efefef;
-  color: transparent;
+  opacity: 0;
 }
 
 .container {
