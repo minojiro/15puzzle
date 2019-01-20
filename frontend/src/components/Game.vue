@@ -60,10 +60,11 @@ export default {
       return Array.isArray(array) ? array.map(this.arrayDeepCopy) : array;
     },
     shuffle() {
-      for (let i = 0; i < 100; i ++) {
+      let i = 50;
+      while (i) {
         const targetBlock = ~~(Math.random() * 15) + 1;
-        this.moveBlock(targetBlock);
-      };
+        i -= this.moveBlock(targetBlock) ? 1 : 0;
+      }
     },
     xor(a, b) {
       return (!a && b) || (a && !b);
@@ -75,7 +76,7 @@ export default {
       const diffY = emptyPos.y - blockPos.y;
       const isMovable = this.xor(diffX, diffY);
 
-      if (!isMovable) return;
+      if (!isMovable) return false;
 
       const incrementX = this.getIncrementNum(diffX);
       const incrementY = this.getIncrementNum(diffY);
@@ -91,6 +92,7 @@ export default {
       }
       newBlocks[blockPos.y][blockPos.x] = 0;
       this.blocks = newBlocks;
+      return newBlocks;
     },
     getIncrementNum(n) {
       return n === 0 ? 0 : (n > 0 ? 1 : -1);
